@@ -1,0 +1,39 @@
+Image Placeholder Instructions for JaxSun.us Website
+
+Required Images (Add these to the /wwwroot/images/ directory):
+
+1. midwest-partnership.jpg (1200x800px)
+   - Hero image showing Midwest countryside with professional overlay
+   - Should convey partnership, trust, and Midwest values
+   - Suggested: Rural landscape with modern technology elements
+
+2. bobby-profile.jpg (400x400px)
+   - Professional headshot of Bobby (Senior Partner)
+   - Should convey experience, trustworthiness, and approachability
+   - Midwest gentleman aesthetic
+
+3. robert-profile.jpg (400x400px)
+   - Professional headshot of Robert (Junior Partner)
+   - Should convey military bearing, professionalism, and family values
+   - Clean, professional military veteran look
+
+4. partnership-success.jpg (800x600px)
+   - Image representing successful business partnership
+   - Could show handshake, collaborative work, or success metrics
+   - Professional but warm tone
+
+5. revenue-sharing-model.jpg (600x400px)
+   - Infographic or diagram showing revenue sharing model
+   - Should illustrate partnership benefits and shared success
+   - Clean, professional design with charts/graphs
+
+Image Style Guidelines:
+- Professional but approachable tone
+- Midwest values (authenticity, family, hard work)
+- Color palette: greens, blues, earth tones
+- High quality, web-optimized
+- Consistent lighting and style across all images
+
+Temporary Placeholder:
+Until actual images are provided, the website will display broken image icons.
+Consider using stock photos that match the style guidelines as temporary placeholders.

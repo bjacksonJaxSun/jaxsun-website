@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "JaxSun.Web": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:62135;http://localhost:62136"
+    }
+  }
+}

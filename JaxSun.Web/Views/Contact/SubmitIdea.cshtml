@@ -1,0 +1,209 @@
+@model IdeaSubmissionModel
+@{
+    ViewData["Title"] = "Submit Your Idea";
+}
+
+<section class="submit-idea-hero py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h1>Submit Your Business Idea</h1>
+                <p class="lead">Get professional evaluation and market research for your business concept</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="idea-submission-form py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-success" role="alert">
+                        @TempData["SuccessMessage"]
+                    </div>
+                }
+
+                <div class="form-container bg-white p-4 rounded shadow">
+                    <form asp-action="SubmitIdea" method="post" novalidate>
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="Name" class="form-label required">Full Name</label>
+                                    <input asp-for="Name" class="form-control" placeholder="Enter your full name" />
+                                    <span asp-validation-for="Name" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="Email" class="form-label required">Email Address</label>
+                                    <input asp-for="Email" type="email" class="form-control" placeholder="your.email@example.com" />
+                                    <span asp-validation-for="Email" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Company" class="form-label">Company/Organization (Optional)</label>
+                            <input asp-for="Company" class="form-control" placeholder="Your company or organization name" />
+                            <span asp-validation-for="Company" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="IdeaDescription" class="form-label required">Business Idea Description</label>
+                            <textarea asp-for="IdeaDescription" class="form-control" rows="6" 
+                                      placeholder="Describe your business idea in detail. What problem does it solve? Who is your target audience? What makes it unique?"></textarea>
+                            <small class="form-text text-muted">Maximum 2000 characters</small>
+                            <span asp-validation-for="IdeaDescription" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="MarketOpportunity" class="form-label required">Market Opportunity</label>
+                            <textarea asp-for="MarketOpportunity" class="form-control" rows="4" 
+                                      placeholder="Describe the market opportunity. How big is the potential market? What trends support your idea?"></textarea>
+                            <small class="form-text text-muted">Maximum 1000 characters</small>
+                            <span asp-validation-for="MarketOpportunity" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="PartnershipInterest" class="form-label required">Partnership Interest Level</label>
+                            <select asp-for="PartnershipInterest" class="form-control">
+                                <option value="">Please select your interest level</option>
+                                <option value="Very Interested">Very Interested - Ready to move forward quickly</option>
+                                <option value="Interested">Interested - Want to learn more about the process</option>
+                                <option value="Exploring">Exploring Options - Still evaluating different approaches</option>
+                                <option value="Just Curious">Just Curious - Want to understand the opportunity</option>
+                            </select>
+                            <span asp-validation-for="PartnershipInterest" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-actions text-center">
+                            <button type="submit" class="btn btn-primary btn-lg me-3">
+                                <i class="fas fa-paper-plane me-2"></i>Submit My Idea
+                            </button>
+                            <a asp-controller="Contact" asp-action="Index" class="btn btn-outline-secondary btn-lg">
+                                <i class="fas fa-arrow-left me-2"></i>Back to Contact
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="submission-benefits py-5 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-5">
+                <h2>What You Get After Submission</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 text-center mb-4">
+                <div class="benefit-item">
+                    <i class="fas fa-search fa-3x text-primary mb-3"></i>
+                    <h4>Professional Market Research</h4>
+                    <p>AI-powered analysis of your market opportunity, competition, and potential success factors.</p>
+                </div>
+            </div>
+            <div class="col-md-4 text-center mb-4">
+                <div class="benefit-item">
+                    <i class="fas fa-chart-line fa-3x text-primary mb-3"></i>
+                    <h4>Feasibility Assessment</h4>
+                    <p>Technical and business feasibility evaluation based on our 47+ years of experience.</p>
+                </div>
+            </div>
+            <div class="col-md-4 text-center mb-4">
+                <div class="benefit-item">
+                    <i class="fas fa-handshake fa-3x text-primary mb-3"></i>
+                    <h4>Partnership Discussion</h4>
+                    <p>If there's a good fit, we'll discuss how we can partner to bring your idea to life.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="security-privacy py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-4">
+                <h2>Your Privacy & Security</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 text-center mb-4">
+                <div class="security-item">
+                    <i class="fas fa-shield-alt fa-2x text-success mb-3"></i>
+                    <h4>Confidentiality Guaranteed</h4>
+                    <p>All submissions are treated with strict confidentiality. We respect your intellectual property.</p>
+                </div>
+            </div>
+            <div class="col-md-6 text-center mb-4">
+                <div class="security-item">
+                    <i class="fas fa-lock fa-2x text-success mb-3"></i>
+                    <h4>Secure Data Handling</h4>
+                    <p>Your information is encrypted and stored securely. We never share your data with third parties.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+    
+    <script>
+        $(document).ready(function() {
+            // Character count for textarea fields
+            $('#IdeaDescription').on('input', function() {
+                const maxLength = 2000;
+                const currentLength = $(this).val().length;
+                const remaining = maxLength - currentLength;
+                
+                let helpText = $(this).siblings('.form-text');
+                if (remaining < 100) {
+                    helpText.removeClass('text-muted').addClass('text-warning');
+                    helpText.text(`${remaining} characters remaining`);
+                } else {
+                    helpText.removeClass('text-warning').addClass('text-muted');
+                    helpText.text('Maximum 2000 characters');
+                }
+            });
+            
+            $('#MarketOpportunity').on('input', function() {
+                const maxLength = 1000;
+                const currentLength = $(this).val().length;
+                const remaining = maxLength - currentLength;
+                
+                let helpText = $(this).siblings('.form-text');
+                if (remaining < 50) {
+                    helpText.removeClass('text-muted').addClass('text-warning');
+                    helpText.text(`${remaining} characters remaining`);
+                } else {
+                    helpText.removeClass('text-warning').addClass('text-muted');
+                    helpText.text('Maximum 1000 characters');
+                }
+            });
+            
+            // Form submission handling
+            $('form').on('submit', function() {
+                const submitBtn = $(this).find('button[type="submit"]');
+                submitBtn.prop('disabled', true);
+                submitBtn.html('<i class="fas fa-spinner fa-spin me-2"></i>Submitting...');
+                
+                // Re-enable button after 10 seconds in case of errors
+                setTimeout(function() {
+                    submitBtn.prop('disabled', false);
+                    submitBtn.html('<i class="fas fa-paper-plane me-2"></i>Submit My Idea');
+                }, 10000);
+            });
+        });
+    </script>
+}

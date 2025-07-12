@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: jaxsun-website
+    env: dotnet
+    buildCommand: dotnet publish JaxSun.Web/JaxSun.Web.csproj -c Release -o out
+    startCommand: dotnet out/JaxSun.Web.dll
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: ASPNETCORE_URLS
+        value: http://0.0.0.0:10000
+      - key: EmailSettings__SmtpServer
+        value: smtp.gmail.com
+      - key: EmailSettings__SmtpPort
+        value: "587"
+      - key: EmailSettings__FromEmail
+        value: contact@jaxsun.us
+      - key: EmailSettings__FromName
+        value: JaxSun Partnership
+    # Add these as environment variables in Render dashboard for security
+    # - EmailSettings__Username (your SMTP username)
+    # - EmailSettings__Password (your SMTP password/app password)
