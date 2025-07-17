@@ -36,8 +36,43 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Contact" asp-action="Index">Contact</a>
                         </li>
+                        @if (User.Identity.IsAuthenticated && (User.IsInRole("Admin") || User.IsInRole("Partner")))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="TimeTracking" asp-action="Index">
+                                    <i class="fas fa-clock"></i> Time Tracking
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Projects" asp-action="Index">
+                                    <i class="fas fa-project-diagram"></i> Projects
+                                </a>
+                            </li>
+                        }
                     </ul>
                     <div class="d-flex">
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <div class="dropdown">
+                                <a class="btn btn-outline-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-user"></i> @User.Identity.Name
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                    <li>
+                                        <form method="post" action="@Url.Action("Logout", "Account")" style="display: inline;">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="dropdown-item" style="border: none; background: none; text-align: left; width: 100%;">
+                                                Logout
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
+                        }
+                        else
+                        {
+                            <a class="btn btn-outline-primary me-2" asp-area="Identity" asp-page="/Account/Login">Login</a>
+                        }
                         <a class="btn btn-primary" asp-controller="Contact" asp-action="SubmitIdea">Submit Your Idea</a>
                     </div>
                 </div>
@@ -84,6 +119,7 @@
         </div>
     </footer>
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)

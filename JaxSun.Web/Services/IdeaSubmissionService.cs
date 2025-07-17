@@ -72,12 +72,19 @@ namespace JaxSun.Web.Services
         public async Task<IdeaSubmissionModel?> GetSubmissionByIdAsync(int id)
         {
             var submissions = await GetAllSubmissionsAsync();
-            return submissions.FirstOrDefault(s => s.GetHashCode() == id);
+            return submissions.FirstOrDefault(s => s.Id == id);
         }
 
         private async Task SaveSubmissionAsync(IdeaSubmissionModel submission)
         {
             var submissions = await GetAllSubmissionsAsync();
+            
+            // Assign ID if not already set
+            if (submission.Id == 0)
+            {
+                submission.Id = submissions.Any() ? submissions.Max(s => s.Id) + 1 : 1;
+            }
+            
             submissions.Add(submission);
 
             var options = new JsonSerializerOptions

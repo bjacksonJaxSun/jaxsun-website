@@ -4,6 +4,8 @@ namespace JaxSun.Web.Models
 {
     public class IdeaSubmissionModel
     {
+        public int Id { get; set; }
+
         [Required(ErrorMessage = "Name is required")]
         [Display(Name = "Full Name")]
         public string Name { get; set; } = string.Empty;

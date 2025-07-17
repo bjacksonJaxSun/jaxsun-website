@@ -1,0 +1,313 @@
+@model JaxSun.Web.Models.ViewModels.TimeTrackingIndexViewModel
+@{
+    ViewData["Title"] = "Time Tracking Dashboard";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1><i class="fas fa-clock"></i> Time Tracking Dashboard</h1>
+                <div>
+                    <a href="@Url.Action("ManualEntry", "TimeTracking")" class="btn btn-outline-primary">
+                        <i class="fas fa-plus"></i> Add Manual Entry
+                    </a>
+                    <a href="@Url.Action("History", "TimeTracking")" class="btn btn-outline-secondary">
+                        <i class="fas fa-history"></i> View History
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h3 class="card-title">Timer</h3>
+                    @if (Model.ActiveTimer != null)
+                    {
+                        <div class="timer-display">
+                            <div class="timer-time" id="timer-display">
+                                <span id="timer-hours">00</span>:<span id="timer-minutes">00</span>:<span id="timer-seconds">00</span>
+                            </div>
+                            <div class="timer-info mb-3">
+                                <div><strong>Project:</strong> @(Model.ActiveTimer.Project?.Name ?? "Unknown")</div>
+                                <div><strong>Category:</strong> @(Model.ActiveTimer.Category?.Name ?? "General")</div>
+                                <div><strong>Started:</strong> @Model.ActiveTimer.StartTime.ToString("h:mm tt")</div>
+                            </div>
+                            <button id="stop-timer" class="btn btn-danger btn-lg" data-timer-id="@Model.ActiveTimer.Id">
+                                <i class="fas fa-stop"></i> Stop Timer
+                            </button>
+                        </div>
+                    }
+                    else
+                    {
+                        <form id="start-timer-form" method="post" action="@Url.Action("StartTimer")">
+                            @Html.AntiForgeryToken()
+                            <div class="mb-3">
+                                <label for="ProjectId" class="form-label">Project</label>
+                                <select name="ProjectId" id="ProjectId" class="form-select" required>
+                                    <option value="">Select a project...</option>
+                                    @foreach (var project in Model.Projects)
+                                    {
+                                        <option value="@project.Id">@project.Name</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="CategoryId" class="form-label">Category</label>
+                                <select name="CategoryId" id="CategoryId" class="form-select" required>
+                                    <option value="">Select a category...</option>
+                                    @foreach (var category in Model.Categories)
+                                    {
+                                        <option value="@category.Id">@category.Name</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="Description" class="form-label">Description (optional)</label>
+                                <input type="text" name="Description" id="Description" class="form-control" placeholder="What are you working on?">
+                            </div>
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="fas fa-play"></i> Start Timer
+                            </button>
+                        </form>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title">Today's Summary</h3>
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="stat-item">
+                                <div class="stat-number">@(Model.RecentEntries.Where(e => e.StartTime.Date == DateTime.Today && e.EndTime.HasValue).Sum(e => e.HoursWorked).ToString("F1"))</div>
+                                <div class="stat-label">Hours Today</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="stat-item">
+                                <div class="stat-number">@Model.RecentEntries.Count(e => e.StartTime.Date == DateTime.Today)</div>
+                                <div class="stat-label">Entries Today</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-6">
+                            <div class="stat-item">
+                                <div class="stat-number">@(Model.RecentEntries.Where(e => e.StartTime.Date >= DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek) && e.EndTime.HasValue).Sum(e => e.HoursWorked).ToString("F1"))</div>
+                                <div class="stat-label">Hours This Week</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="stat-item">
+                                <div class="stat-number">@(Model.RecentEntries.Where(e => e.StartTime.Month == DateTime.Today.Month && e.EndTime.HasValue).Sum(e => e.HoursWorked).ToString("F1"))</div>
+                                <div class="stat-label">Hours This Month</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Recent Time Entries</h4>
+                </div>
+                <div class="card-body">
+                    @if (Model.RecentEntries.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Project</th>
+                                        <th>Category</th>
+                                        <th>Description</th>
+                                        <th>Duration</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var entry in Model.RecentEntries)
+                                    {
+                                        <tr>
+                                            <td>@entry.StartTime.ToString("MMM d, yyyy")</td>
+                                            <td>@(entry.Project?.Name ?? "Unknown")</td>
+                                            <td>
+                                                <span class="badge" style="background-color: @(entry.Category?.Color ?? "#6c757d");">@(entry.Category?.Name ?? "General")</span>
+                                            </td>
+                                            <td>@entry.Description</td>
+                                            <td>
+                                                @if (entry.EndTime.HasValue)
+                                                {
+                                                    @((entry.EndTime.Value - entry.StartTime).ToString(@"h\:mm"))
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-success">Active</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                <a href="@Url.Action("Edit", "TimeTracking", new { id = entry.Id })" class="btn btn-sm btn-outline-primary">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <a href="@Url.Action("Delete", "TimeTracking", new { id = entry.Id })" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to delete this entry?')">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-4">
+                            <i class="fas fa-clock fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">No time entries yet. Start your first timer above!</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .timer-display {
+        margin: 20px 0;
+    }
+    
+    .timer-time {
+        font-size: 3rem;
+        font-weight: bold;
+        color: #28a745;
+        margin-bottom: 10px;
+    }
+    
+    .timer-info {
+        font-size: 1.1rem;
+        color: #6c757d;
+    }
+    
+    .stat-item {
+        text-align: center;
+        margin-bottom: 15px;
+    }
+    
+    .stat-number {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #007bff;
+    }
+    
+    .stat-label {
+        font-size: 0.9rem;
+        color: #6c757d;
+    }
+</style>
+
+@section Scripts {
+    <script>
+        // Timer functionality
+        let timerInterval;
+        let startTime;
+        
+        @if (Model.ActiveTimer != null)
+        {
+            <text>
+            startTime = new Date('@Model.ActiveTimer.StartTime.ToString("o")');
+            startTimer();
+            </text>
+        }
+        
+        function startTimer() {
+            timerInterval = setInterval(updateTimer, 1000);
+            updateTimer();
+        }
+        
+        function updateTimer() {
+            const now = new Date();
+            const elapsed = Math.floor((now - startTime) / 1000);
+            
+            const hours = Math.floor(elapsed / 3600);
+            const minutes = Math.floor((elapsed % 3600) / 60);
+            const seconds = elapsed % 60;
+            
+            const hoursEl = document.getElementById('timer-hours');
+            const minutesEl = document.getElementById('timer-minutes');
+            const secondsEl = document.getElementById('timer-seconds');
+            
+            if (hoursEl) hoursEl.textContent = String(hours).padStart(2, '0');
+            if (minutesEl) minutesEl.textContent = String(minutes).padStart(2, '0');
+            if (secondsEl) secondsEl.textContent = String(seconds).padStart(2, '0');
+        }
+        
+        function stopTimer() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+        }
+        
+        // Stop timer button handler
+        document.getElementById('stop-timer')?.addEventListener('click', function() {
+            const timerId = this.getAttribute('data-timer-id');
+            stopTimer();
+            
+            // Submit stop request
+            fetch('@Url.Action("StopTimer", "TimeTracking")', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `timeEntryId=${timerId}&__RequestVerificationToken=${document.querySelector('input[name="__RequestVerificationToken"]')?.value || ''}`
+            })
+            .then(response => {
+                if (response.ok) {
+                    location.reload();
+                } else {
+                    throw new Error('Network response was not ok');
+                }
+            })
+            .catch(error => {
+                console.error('Error stopping timer:', error);
+                alert('Error stopping timer. Please try again.');
+            });
+        });
+        
+        // Auto-refresh timer status every 30 seconds
+        setInterval(function() {
+            fetch('@Url.Action("GetActiveTimer", "TimeTracking")')
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    }
+                    throw new Error('Network response was not ok');
+                })
+                .then(data => {
+                    if (data.hasActiveTimer && !timerInterval) {
+                        // Timer was started elsewhere, reload page
+                        location.reload();
+                    } else if (!data.hasActiveTimer && timerInterval) {
+                        // Timer was stopped elsewhere, reload page
+                        location.reload();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error checking timer status:', error);
+                    // Don't show alert for background refresh errors
+                });
+        }, 30000);
+    </script>
+}
